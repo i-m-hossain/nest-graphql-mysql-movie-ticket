@@ -19,15 +19,25 @@ type SignupResponse {
   user: User!
 }
 
+type Movie {
+  Title: String!
+  Year: String!
+  imdbID: String!
+  Type: String!
+  Poster: String!
+}
+
 type Query {
   allUsers: [User!]!
   singleUser(username: String!): User!
+  movies(searchString: String!): [Movie!]!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(createUserInput: CreateUserInput!): SignupResponse!
+  createMovie(createMovieInput: CreateMovieInput!): Movie!
 }
 
 input CreateUserInput {
@@ -39,4 +49,9 @@ input CreateUserInput {
 input LoginUserInput {
   username: String!
   password: String!
+}
+
+input CreateMovieInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
 }

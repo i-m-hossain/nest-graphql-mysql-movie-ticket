@@ -5,7 +5,8 @@ import { CreateUserInput } from 'src/users/dto/create-user.input';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import hashPassword from 'src/lib/hashPassword';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class AuthService {
   constructor(
