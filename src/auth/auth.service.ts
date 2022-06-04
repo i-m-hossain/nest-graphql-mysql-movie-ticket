@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { LoginUserInput } from './dto/login-user-input';
-
+import hashPassword from 'src/lib/hashPassword';
+import * as bcrypt from 'bcrypt'
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,12 +17,14 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { username: username },
     });
-    if (user && user.password === password) {
+    const valid = await bcrypt.compare(password, user.password);
+    if (user && valid) {
       return user;
     }
     return null;
   }
   login(user: User) {
+    //before login user is retrieved from the context
     return {
       access_token: this.jwtService.sign({
         username: user.username,
@@ -32,14 +34,24 @@ export class AuthService {
     };
   }
   async signup(createUserInput: CreateUserInput) {
+    //first check if the user already exists
     const user = await this.userRepository.findOne({
       where: { username: createUserInput.username },
     });
     if (user) {
       throw new Error('User already exists');
     }
-    const newUser = this.userRepository.create(createUserInput);
+
+    //hashing the password
+    const password = await hashPassword(createUserInput.password);
+
+    //saving to database
+    const newUser = this.userRepository.create({
+      ...createUserInput,
+      password,
+    });
     await this.userRepository.save(newUser);
+    //graphql response
     return {
       access_token: this.jwtService.sign({
         username: newUser.username,
