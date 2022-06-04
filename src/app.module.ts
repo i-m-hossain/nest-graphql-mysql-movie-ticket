@@ -22,8 +22,8 @@ import { AuthModule } from './auth/auth.module';
       database: 'nestGraphql',
       entities: ['dist/**/*.entity.js'],
       synchronize: true,
-      migrationsRun: true,
-      dropSchema: true,
+      /*  migrationsRun: true,
+      dropSchema: true, */
     }),
     AuthModule,
   ],

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { LoginUserInput } from './dto/login-user-input';
 
 @Injectable()
 export class AuthService {
@@ -19,10 +18,7 @@ export class AuthService {
     }
     return null;
   }
-  async login(loginUserInput: LoginUserInput): Promise<any> {
-    const user = await this.userRepository.findOne({
-      where: { username: loginUserInput.username },
-    });
+  login(user: User) {
     return {
       access_token: 'jwt',
       user: user,
